@@ -516,14 +516,10 @@ module Spring
       test "booting a foreground server" do
         FileUtils.cd(app.root) do
           assert !spring_env.server_running?
-          app.run "spring server &"
+          assert_success "bin/spring server &"
 
-          begin
-            Timeout.timeout(10) do
-              sleep 0.1 until spring_env.server_running? && spring_env.socket_path.exist?
-            end
-          rescue Timeout::Error
-            puts "Got timeout"
+          Timeout.timeout(10) do
+            sleep 0.1 until spring_env.server_running? && spring_env.socket_path.exist?
           end
 
           assert_success app.spring_test_command
